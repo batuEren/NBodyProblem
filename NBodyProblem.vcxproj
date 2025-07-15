@@ -94,6 +94,8 @@
     <None Include="libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\docs\html\vulkan_guide.html" />
     <None Include="libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\docs\html\window_8md.html" />
     <None Include="libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\docs\html\window_guide.html" />
+    <None Include="src\fragment.glsl" />
+    <None Include="src\vertex.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
