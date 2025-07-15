@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\massObject.cpp" />
+    <ClCompile Include="src\MassObject.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -28,7 +28,7 @@
     <ClInclude Include="include\KHR\khrplatform.h" />
     <ClInclude Include="libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include\GLFW\glfw3.h" />
     <ClInclude Include="libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include\GLFW\glfw3native.h" />
-    <ClInclude Include="src\massObject.h" />
+    <ClInclude Include="src\MassObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />

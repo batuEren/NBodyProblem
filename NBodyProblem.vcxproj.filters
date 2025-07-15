@@ -18,7 +18,7 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\massObject.cpp">
+    <ClCompile Include="src\MassObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\glad.c">
@@ -26,7 +26,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\massObject.h">
+    <ClInclude Include="src\MassObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\glad\glad.h">
