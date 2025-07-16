@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/glm.hpp>
 class MassObject
 {
 	public:
@@ -8,6 +9,8 @@ class MassObject
         double getMass() const;
 
         void setMass(double m);
+
+
 
 	private:
 		float mass = 1.0f; // mass in kilograms
