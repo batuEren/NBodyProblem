@@ -1,21 +1,33 @@
 #include <glad/glad.h>     // Include before GLFW!
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "GridGenerator.h"
 #include <iostream>
 
 
-const char* vertexShaderSource = "#version 460 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
+const char* vertexShaderSource = R"(#version 460 core
+layout(location = 0) in vec3 aPos;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+}
+)";
 
 const char* fragmentShaderSource = R"(
 #version 460 core
 out vec4 FragColor;
 
+uniform vec4 objectColor;
+
 void main() {
-    FragColor = vec4(1.0, 0.5, 0.2, 1.0); // orange color
+    FragColor = objectColor;
 }
 )";
 
@@ -49,6 +61,19 @@ int main() {
 
     // Viewport
     glViewport(0, 0, 800, 600);
+    glEnable(GL_DEPTH_TEST);
+
+    //Camera Projection
+    glm::mat4 projection = glm::ortho(-20.0f, 20.0f, -15.0f, 15.0f, 0.1f, 100.0f);
+
+    glm::mat4 view = glm::lookAt(
+        glm::vec3(0.0f, 10.0f, 20.0f), // camera position
+        glm::vec3(0.0f, 0.0f, 0.0f), // look at
+        glm::vec3(0.0f, 1.0f, 0.0f)  // up vector
+    );
+
+    glm::mat4 model = glm::mat4(1.0f);
+
 
     float vertices[] = {
     -0.5f, -0.5f, 0.0f,
@@ -123,25 +148,55 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    //create grid
+    std::vector<float> gridVertices = generateGridVertices(10); // grid from -10 to +10
+    unsigned int gridVAO, gridVBO;
+
+    glGenVertexArrays(1, &gridVAO);
+    glGenBuffers(1, &gridVBO);
+
+    glBindVertexArray(gridVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
+    glBufferData(GL_ARRAY_BUFFER, gridVertices.size() * sizeof(float), gridVertices.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+        
         // get input here
         
-        
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        // Rendering goes here...
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+
+        unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
+        unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
+        unsigned int projLoc = glGetUniformLocation(shaderProgram, "projection");
+        unsigned int colorLoc = glGetUniformLocation(shaderProgram, "objectColor");
+
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        // Draw grid
+        glm::mat4 gridModel = glm::mat4(1.0f);
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(gridModel));
+        glUniform4f(colorLoc, 0.8f, 0.8f, 0.8f, 1.0f);
+        glBindVertexArray(gridVAO);
+        glDrawArrays(GL_LINES, 0, gridVertices.size() / 3);
+
+        // Draw triangle
+        glm::mat4 model = glm::mat4(1.0f);
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniform4f(colorLoc, 1.0f, 0.5f, 0.2f, 1.0f);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
-
         glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
     glfwTerminate();

@@ -1,7 +1,5 @@
 #include "MassObject.h"
 #include <glm/glm.hpp>
-#include <glm/gtx/norm.hpp> // for distance2 (optional, for optimization)
-#include <glm/gtx/vector_angle.hpp>
 
 MassObject::MassObject() = default;
 
