@@ -56,19 +56,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         // To Do, Rotate around the Look at Pos
         case GLFW_KEY_W:
             std::cout << "Up arrow pressed\n";
-            camera.movePos(glm::vec3({ 0.0f, 0.0f, 1.0f }));
+            camera.shiftSphereCoords(glm::vec2({ 0.0f, 0.05f }));
             break;
         case GLFW_KEY_A:
             std::cout << "Down arrow pressed\n";
-            camera.movePos(glm::vec3({ 0.0f, 0.0f, -1.0f }));
+            camera.shiftSphereCoords(glm::vec2({ 0.05f, 0.0f }));
             break;
         case GLFW_KEY_S:
             std::cout << "Left arrow pressed\n";
-            camera.movePos(glm::vec3({ 1.0f, 0.0f, 0.0f }));
+            camera.shiftSphereCoords(glm::vec2({ 0.0f, -0.05f}));
             break;
         case GLFW_KEY_D:
             std::cout << "Right arrow pressed\n";
-            camera.movePos(glm::vec3({ -1.0f, 0.0f, 0.0f }));
+            camera.shiftSphereCoords(glm::vec2({ -0.05f, 0.0f }));
             break;
         case GLFW_KEY_ESCAPE:
             glfwSetWindowShouldClose(window, true);
