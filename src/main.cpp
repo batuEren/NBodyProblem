@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "GridGenerator.h"
 #include <iostream>
+#include "Camera.h"
 
 
 const char* vertexShaderSource = R"(#version 460 core
@@ -31,20 +32,43 @@ void main() {
 }
 )";
 
+Camera camera;
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         switch (key) {
         case GLFW_KEY_UP:
             std::cout << "Up arrow pressed\n";
+            camera.move(glm::vec3({ 0.0f, 0.0f, 1.0f }));
             break;
         case GLFW_KEY_DOWN:
             std::cout << "Down arrow pressed\n";
+            camera.move(glm::vec3({ 0.0f, 0.0f, -1.0f }));
             break;
         case GLFW_KEY_LEFT:
             std::cout << "Left arrow pressed\n";
+            camera.move(glm::vec3({ 1.0f, 0.0f, 0.0f }));
             break;
         case GLFW_KEY_RIGHT:
             std::cout << "Right arrow pressed\n";
+            camera.move(glm::vec3({ -1.0f, 0.0f, 0.0f }));
+            break;
+        // To Do, Rotate around the Look at Pos
+        case GLFW_KEY_W:
+            std::cout << "Up arrow pressed\n";
+            camera.movePos(glm::vec3({ 0.0f, 0.0f, 1.0f }));
+            break;
+        case GLFW_KEY_A:
+            std::cout << "Down arrow pressed\n";
+            camera.movePos(glm::vec3({ 0.0f, 0.0f, -1.0f }));
+            break;
+        case GLFW_KEY_S:
+            std::cout << "Left arrow pressed\n";
+            camera.movePos(glm::vec3({ 1.0f, 0.0f, 0.0f }));
+            break;
+        case GLFW_KEY_D:
+            std::cout << "Right arrow pressed\n";
+            camera.movePos(glm::vec3({ -1.0f, 0.0f, 0.0f }));
             break;
         case GLFW_KEY_ESCAPE:
             glfwSetWindowShouldClose(window, true);
@@ -90,12 +114,6 @@ int main() {
 
     //Camera Projection
     glm::mat4 projection = glm::ortho(-20.0f, 20.0f, -15.0f, 15.0f, 0.1f, 100.0f);
-
-    glm::mat4 view = glm::lookAt(
-        glm::vec3(0.0f, 10.0f, 20.0f), // camera position
-        glm::vec3(0.0f, 0.0f, 0.0f), // look at
-        glm::vec3(0.0f, 1.0f, 0.0f)  // up vector
-    );
 
     glm::mat4 model = glm::mat4(1.0f);
 
@@ -198,6 +216,12 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+
+        glm::mat4 view = glm::lookAt(
+            camera.getPosition(), // camera position
+            camera.getLookAt(), // look at
+            glm::vec3(0.0f, 1.0f, 0.0f)  // up vector
+        );
 
         unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
         unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");

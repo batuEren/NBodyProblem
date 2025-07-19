@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\GridGenerator.cpp" />
     <ClCompile Include="src\MassObject.cpp" />
@@ -29,6 +30,7 @@
     <ClInclude Include="include\KHR\khrplatform.h" />
     <ClInclude Include="libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include\GLFW\glfw3.h" />
     <ClInclude Include="libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include\GLFW\glfw3native.h" />
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\GridGenerator.h" />
     <ClInclude Include="src\MassObject.h" />
   </ItemGroup>
