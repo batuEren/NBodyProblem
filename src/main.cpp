@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "GridGenerator.h"
+#include "Sphere.h"
 #include <iostream>
 #include "Camera.h"
 
@@ -33,6 +34,13 @@ void main() {
 )";
 
 Camera camera;
+
+void initializeCamera() {
+    // Set camera for better grid visibility
+    camera.setLookAt(glm::vec3(0.0f, 0.0f, 0.0f));  // Look at center
+    camera.setRadius(25.0f);  // Move camera further back
+    camera.setSphereCoords(glm::vec2(glm::pi<float>() / 4.0f, glm::pi<float>() / 6.0f));  // Better angle
+}
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
@@ -112,8 +120,11 @@ int main() {
     glViewport(0, 0, 800, 600);
     glEnable(GL_DEPTH_TEST);
 
-    //Camera Projection
-    glm::mat4 projection = glm::ortho(-20.0f, 20.0f, -15.0f, 15.0f, 0.1f, 100.0f);
+    // Initialize camera for better visibility
+    initializeCamera();
+
+    //Camera Projection - increased bounds and moved near plane back
+    glm::mat4 projection = glm::ortho(-25.0f, 25.0f, -20.0f, 20.0f, 1.0f, 100.0f);
 
     glm::mat4 model = glm::mat4(1.0f);
 
@@ -206,6 +217,17 @@ int main() {
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
 
+    // Create sphere geometry (shared by all spheres)
+    SphereGeometry sphereGeometry = generateSphereGeometry(32, 32);
+
+    // Create example spheres with different positions, radii, and colors
+    std::vector<Sphere> spheres;
+    spheres.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 2.0f, glm::vec4(1.0f, 0.2f, 0.2f, 1.0f)); // Red sphere at origin
+    spheres.emplace_back(glm::vec3(5.0f, 0.0f, 0.0f), 1.5f, glm::vec4(0.2f, 1.0f, 0.2f, 1.0f)); // Green sphere
+    spheres.emplace_back(glm::vec3(-3.0f, 2.0f, 4.0f), 1.0f, glm::vec4(0.2f, 0.2f, 1.0f, 1.0f)); // Blue sphere
+    spheres.emplace_back(glm::vec3(2.0f, -1.0f, -6.0f), 0.8f, glm::vec4(1.0f, 1.0f, 0.2f, 1.0f)); // Yellow sphere
+    spheres.emplace_back(glm::vec3(-5.0f, 1.5f, -2.0f), 1.2f, glm::vec4(1.0f, 0.5f, 0.8f, 1.0f)); // Pink sphere
+
     // Main loop
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
@@ -238,7 +260,19 @@ int main() {
         glBindVertexArray(gridVAO);
         glDrawArrays(GL_LINES, 0, gridVertices.size() / 3);
 
-        // Draw triangle
+        // Draw spheres
+        glBindVertexArray(sphereGeometry.VAO);
+        for (const auto& sphere : spheres) {
+            glm::mat4 sphereModel = sphere.getModelMatrix();
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(sphereModel));
+            
+            const glm::vec4& sphereColor = sphere.getColor();
+            glUniform4f(colorLoc, sphereColor.r, sphereColor.g, sphereColor.b, sphereColor.a);
+            
+            glDrawElements(GL_TRIANGLES, sphereGeometry.vertexCount, GL_UNSIGNED_INT, 0);
+        }
+
+        // Draw triangle (optional - you might want to remove this)
         glm::mat4 model = glm::mat4(1.0f);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glUniform4f(colorLoc, 1.0f, 0.5f, 0.2f, 1.0f);
@@ -247,6 +281,9 @@ int main() {
 
         glfwSwapBuffers(window);
     }
+
+    // Cleanup
+    cleanupSphereGeometry(sphereGeometry);
 
     glfwTerminate();
     return 0;
