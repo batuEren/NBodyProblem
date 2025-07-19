@@ -31,6 +31,29 @@ void main() {
 }
 )";
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+        switch (key) {
+        case GLFW_KEY_UP:
+            std::cout << "Up arrow pressed\n";
+            break;
+        case GLFW_KEY_DOWN:
+            std::cout << "Down arrow pressed\n";
+            break;
+        case GLFW_KEY_LEFT:
+            std::cout << "Left arrow pressed\n";
+            break;
+        case GLFW_KEY_RIGHT:
+            std::cout << "Right arrow pressed\n";
+            break;
+        case GLFW_KEY_ESCAPE:
+            glfwSetWindowShouldClose(window, true);
+            break;
+        }
+    }
+}
+
+
 int main() {
     // Initialize GLFW
     if (!glfwInit()) {
@@ -52,6 +75,8 @@ int main() {
     }
 
     glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, key_callback);
+
 
     // Load OpenGL functions using GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
