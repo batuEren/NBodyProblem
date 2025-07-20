@@ -33,7 +33,7 @@ Sphere MassObjectTracker::getSphereForMassObject(size_t index) const {
     
     // Convert 2D position to 3D (z = 0)
     glm::vec2 pos2D = massObj.getPosition();
-    glm::vec3 pos3D(pos2D.x, pos2D.y, 0.0f);
+    glm::vec3 pos3D(pos2D.x, 0.0f, pos2D.y);
     
     float radius = getRadiusFromMass(massObj.getMass());
     glm::vec4 color = getColorFromMass(massObj.getMass());
