@@ -229,23 +229,20 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    //create grid
-    std::vector<float> gridVertices = generateGridVertices(20, 0.5f); // grid from -10 to +10
-    unsigned int gridVAO, gridVBO;
-
-    glGenVertexArrays(1, &gridVAO);
-    glGenBuffers(1, &gridVBO);
-
-    glBindVertexArray(gridVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
-    glBufferData(GL_ARRAY_BUFFER, gridVertices.size() * sizeof(float), gridVertices.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
 
     // Create sphere geometry (shared by all spheres)
     SphereGeometry sphereGeometry = generateSphereGeometry(32, 32);
+
+    // Create grid VAO and VBO (will be updated each frame)
+    unsigned int gridVAO, gridVBO;
+    glGenVertexArrays(1, &gridVAO);
+    glGenBuffers(1, &gridVBO);
+    
+    glBindVertexArray(gridVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 
     // Create mass object tracker and add some example mass objects with initial velocities
     MassObjectTracker massTracker;
@@ -342,6 +339,13 @@ int main() {
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+        // Update grid vertices based on current gravitational field
+        std::vector<float> gridVertices = generateGridVertices(20, 0.5f, massTracker.getMassObjects());
+        
+        // Update the existing grid buffer with new data
+        glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
+        glBufferData(GL_ARRAY_BUFFER, gridVertices.size() * sizeof(float), gridVertices.data(), GL_DYNAMIC_DRAW);
+
         // Draw grid
         glm::mat4 gridModel = glm::mat4(1.0f);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(gridModel));
@@ -374,6 +378,8 @@ int main() {
 
     // Cleanup
     cleanupSphereGeometry(sphereGeometry);
+    glDeleteVertexArrays(1, &gridVAO);
+    glDeleteBuffers(1, &gridVBO);
 
     glfwTerminate();
     return 0;

@@ -30,7 +30,9 @@ public:
     // Set minimum distance to avoid singularities
     void setSofteningParameter(double softening) { softeningParameter = softening; }
     double getSofteningParameter() const { return softeningParameter; }
-    glm::vec2 calculateGravitationalField(const glm::vec2 point, const std::vector<MassObject>& massObjects) const {}
+    
+    // Calculate gravitational field at a point (for grid visualization)
+    glm::vec2 calculateGravitationalField(const glm::vec2& point, const std::vector<MassObject>& massObjects) const;
 
 private:
     double customG; // Allow custom gravitational constant
