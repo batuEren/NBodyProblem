@@ -49,4 +49,20 @@ glm::vec2 BruteForceCalculator::calculateGravitationalForce(const MassObject& ob
     
     // Return force vector (force on obj1 due to obj2)
     return direction * static_cast<float>(forceMagnitude);
-} 
+}
+
+glm::vec2 BruteForceCalculator::calculateGravitationalField(const glm::vec2 point, const std::vector<MassObject>& massObjects) const {
+    glm::vec2 field = glm::vec2{ 0.0, 0.0 };
+    
+    const size_t numObjects = massObjects.size();
+
+    // Calculate forces for all obj
+    for (size_t i = 0; i < numObjects; ++i) {
+        for (size_t j = i + 1; j < numObjects; ++j) {
+            glm::vec2 force = calculateGravitationalForce(MassObject(1.0, point), massObjects[j]);
+            field += force;
+        }
+    }
+
+    return field;
+}
