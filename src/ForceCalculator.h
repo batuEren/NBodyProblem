@@ -13,9 +13,11 @@ public:
     virtual std::vector<glm::vec2> calculateForces(const std::vector<MassObject>& massObjects) const = 0;
     
 protected:
-    // Gravitational constant (you can adjust this for your simulation)
-    static constexpr double G = 6.67430e-11; // Real value (might want to scale for simulation)
-    // static constexpr double G = 1.0; // Simplified value for easier simulation
+    // Gravitational constant in astronomical units
+    // G = 4π² AU³/(M☉·year²) ≈ 39.48 AU³/(M☉·year²)
+    // For simulation, we use a scaled version for better visual timing
+    static constexpr double G_REAL = 39.478; // Real G in AU³/(M☉·year²)
+    static constexpr double G_SIMULATION = 1.0; // Scaled for simulation timing
 };
 
 // Brute force O(n²) implementation

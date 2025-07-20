@@ -230,7 +230,7 @@ int main() {
     glEnableVertexAttribArray(0);
 
     //create grid
-    std::vector<float> gridVertices = generateGridVertices(10); // grid from -10 to +10
+    std::vector<float> gridVertices = generateGridVertices(20, 0.5f); // grid from -10 to +10
     unsigned int gridVAO, gridVBO;
 
     glGenVertexArrays(1, &gridVAO);
@@ -251,16 +251,49 @@ int main() {
     MassObjectTracker massTracker;
     globalMassTracker = &massTracker; // Set global pointer for keyboard callbacks
     
-    // Add objects with interesting orbital-like initial velocities
-    massTracker.addMassObject(MassObject(10.0, glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));     // Large central mass (stationary)
-    //massTracker.addMassObject(MassObject(2.0, glm::vec2(5.0f, 0.0f), glm::vec2(0.0f, 2.0f)));      // Orbiting mass
-    massTracker.addMassObject(MassObject(1.0, glm::vec2(-3.0f, 0.0f), glm::vec2(0.0f, -1.5f)));    // Counter-orbiting mass
-    //massTracker.addMassObject(MassObject(1.5, glm::vec2(0.0f, 4.0f), glm::vec2(1.8f, 0.0f)));      // Another orbiting mass
-    //massTracker.addMassObject(MassObject(0.8, glm::vec2(-2.0f, -2.0f), glm::vec2(1.0f, 1.0f)));    // Small mass with diagonal motion
+    // Create realistic solar system example with proper astronomical units
+    // All masses in solar masses (M☉), distances in AU, velocities in AU/year
+    // 
+    // REAL-WORLD ORBITAL VELOCITIES (for G = 39.478 AU³/(M☉·year²)):
+    // Formula: v = √(G*M/r) for circular orbit around central mass M
+    // - Earth at 1 AU: v = √(39.478*1.0/1.0) = 6.28 AU/year ≈ 29.8 km/s
+    // - Jupiter at 5.2 AU: v = √(39.478*1.0/5.2) = 2.76 AU/year ≈ 13.1 km/s
+    // - Mars at 1.52 AU: v = √(39.478*1.0/1.52) = 5.07 AU/year ≈ 24.1 km/s
     
-    // Configure physics (you can experiment with these values)
-    massTracker.getPhysicsEngine().setPhysicsTimestep(0.01); // 10ms physics timestep
+    // Sun (1 solar mass at origin, stationary)
+    massTracker.addMassObject(MassObject(1.0, glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
     
+    // Using real orbital velocities for G = 39.478
+    // Jupiter (0.001 solar masses at 5.2 AU with real orbital velocity)
+    massTracker.addMassObject(MassObject(0.001, glm::vec2(5.2f, 0.0f), glm::vec2(0.0f, 2.76f)));
+    
+    // Earth (3×10⁻⁶ solar masses at 1 AU with real orbital velocity) 
+    massTracker.addMassObject(MassObject(3e-6, glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 6.28f)));
+    
+    // Mars (3.2×10⁻⁷ solar masses at 1.52 AU with real orbital velocity)
+    massTracker.addMassObject(MassObject(3.2e-7, glm::vec2(1.52f, 0.0f), glm::vec2(0.0f, 5.07f)));
+    
+    // Large asteroid (10⁻¹⁰ solar masses in asteroid belt at 2.8 AU)
+    massTracker.addMassObject(MassObject(1e-10, glm::vec2(2.8f, 0.0f), glm::vec2(0.0f, 3.76f)));
+    
+    // Configure physics timestep for real astronomical values (needs smaller timestep)
+    massTracker.getPhysicsEngine().setPhysicsTimestep(0.0001); // 0.0001 years ≈ 0.88 hours
+    
+    // Display system information
+    std::cout << "=== N-Body Solar System Simulation ===" << std::endl;
+    std::cout << "Units: AU (distance), Solar Masses (mass), Years (time)" << std::endl;
+    std::cout << "Physics: G = 39.478 AU³/(M☉·year²) [REAL VALUE]" << std::endl;
+    std::cout << "Objects created:" << std::endl;
+    std::cout << "- Sun: 1.0 M☉ at origin (stationary)" << std::endl;
+    std::cout << "- Jupiter: 0.001 M☉ at 5.2 AU (v = 2.76 AU/year ≈ 13.1 km/s)" << std::endl;
+    std::cout << "- Earth: 3×10⁻⁶ M☉ at 1.0 AU (v = 6.28 AU/year ≈ 29.8 km/s)" << std::endl;
+    std::cout << "- Mars: 3.2×10⁻⁷ M☉ at 1.52 AU (v = 5.07 AU/year ≈ 24.1 km/s)" << std::endl;
+    std::cout << "- Asteroid: 10⁻¹⁰ M☉ at 2.8 AU (v = 3.76 AU/year ≈ 17.9 km/s)" << std::endl;
+    std::cout << "Physics timestep: 0.0001 years (≈0.88 hours) [Fine timestep for stability]" << std::endl;
+    std::cout << "Controls: SPACE=physics on/off, E=Euler, V=Verlet" << std::endl;
+    std::cout << "Note: Using REAL orbital mechanics - Earth completes orbit in 1 year!" << std::endl;
+    std::cout << "=========================================" << std::endl;
+
     // Variables for timing and energy monitoring
     double lastTime = glfwGetTime();
     double physicsTime = 0.0;

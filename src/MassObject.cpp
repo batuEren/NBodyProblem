@@ -4,7 +4,7 @@
 MassObject::MassObject() = default;
 
 MassObject::MassObject(double mass, glm::vec2 pos)
-    : mass(mass), position(pos) {}
+    : mass(mass), position(pos) {} // position in astronomic units
 
 MassObject::MassObject(double mass, glm::vec2 pos, glm::vec2 vel)
     : mass(mass), position(pos), velocity(vel) {}

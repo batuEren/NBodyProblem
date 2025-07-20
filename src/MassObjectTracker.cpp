@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 MassObjectTracker::MassObjectTracker() {
     physicsEngine = std::make_unique<PhysicsEngine>();
@@ -61,9 +62,36 @@ size_t MassObjectTracker::getCount() const {
 }
 
 float MassObjectTracker::getRadiusFromMass(double mass) const {
-    // Scale radius based on mass 
-    // Using cube root to make the volume proportional to mass
-    return static_cast<float>(0.5 + 0.3 * std::cbrt(mass));
+    // Logarithmic scaling - perfect for massive range of solar masses
+    // Formula: baseRadius + scaleFactor × (log10(mass) - minLog) / (maxLog - minLog)
+    // 
+    // This handles the huge range from Sun (1.0 M☉) to asteroids (10⁻¹⁰ M☉)
+    // Sun: log10(1.0) = 0 → max radius
+    // Jupiter: log10(0.001) = -3 → 70% of max
+    // Earth: log10(3e-6) ≈ -5.5 → 45% of max  
+    // Asteroid: log10(1e-10) = -10 → min radius
+    //
+    // To adjust:
+    // - Change minLog/maxLog to adjust the mass range
+    // - Increase scaleFactor (0.15f) to make size differences more pronounced
+    // - Increase baseRadius (0.05f) to make smallest objects bigger
+    // - Adjust max clamp (0.25f) to change largest object size
+    
+    // Use log10 scaling with offset
+    double logMass = std::log10(std::max(mass, 1e-12)); // Prevent log(0)
+    double minLog = -10.0; // Minimum mass range (10⁻¹⁰ M☉)
+    double maxLog = 0.0;   // Maximum mass range (1.0 M☉)
+    
+    // Normalize to 0-1 range, then scale
+    double normalizedLog = (logMass - minLog) / (maxLog - minLog);
+    
+    // Base radius + logarithmic scaling
+    float radius = (0.05f + 0.15f * static_cast<float>(normalizedLog)) * 3.0f;
+    //             ^base   ^scale factor
+    
+    // Clamp to reasonable visualization bounds  
+    return std::max(0.25f, std::min(radius, 1.25f));
+    //               ^min         ^max
 }
 
 void MassObjectTracker::updatePhysics(double deltaTime) {
@@ -93,14 +121,14 @@ void MassObjectTracker::switchToVerletIntegrator() {
 }
 
 glm::vec4 MassObjectTracker::getColorFromMass(double mass) const {
-    // Color coding based on mass (you can customize this)
-    if (mass < 2.0) {
-        return glm::vec4(0.2f, 0.2f, 1.0f, 1.0f); // Blue for small masses
-    } else if (mass < 5.0) {
-        return glm::vec4(0.2f, 1.0f, 0.2f, 1.0f); // Green for medium masses
-    } else if (mass < 10.0) {
-        return glm::vec4(1.0f, 1.0f, 0.2f, 1.0f); // Yellow for large masses
+    // Color coding based on solar mass ranges
+    if (mass >= 0.1) {
+        return glm::vec4(1.0f, 0.8f, 0.2f, 1.0f); // Yellow-orange for massive stars
+    } else if (mass >= 0.0001) {
+        return glm::vec4(0.2f, 0.4f, 1.0f, 1.0f); // Blue for gas giants
+    } else if (mass >= 1e-6) {
+        return glm::vec4(0.6f, 0.4f, 0.2f, 1.0f); // Brown for rocky planets
     } else {
-        return glm::vec4(1.0f, 0.2f, 0.2f, 1.0f); // Red for very large masses
+        return glm::vec4(0.8f, 0.8f, 0.8f, 1.0f); // Gray for asteroids/small objects
     }
 } 

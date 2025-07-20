@@ -3,7 +3,7 @@
 #include <algorithm>
 
 BruteForceCalculator::BruteForceCalculator(double gravitationalConstant)
-    : customG(gravitationalConstant), softeningParameter(0.01) {}
+    : customG(gravitationalConstant), softeningParameter(0.001) {} // 0.001 AU ≈ 150,000 km (prevents close-encounter instabilities)
 
 std::vector<glm::vec2> BruteForceCalculator::calculateForces(const std::vector<MassObject>& massObjects) const {
     const size_t numObjects = massObjects.size();
@@ -25,12 +25,14 @@ std::vector<glm::vec2> BruteForceCalculator::calculateForces(const std::vector<M
 
 glm::vec2 BruteForceCalculator::calculateGravitationalForce(const MassObject& obj1, const MassObject& obj2) const {
     // Vector from obj1 to obj2
-    glm::vec2 displacement = obj2.getPosition() - obj1.getPosition();
+    glm::vec2 displacement = obj2.getPosition() - obj1.getPosition(); // in AU
     
     // Distance between objects
-    double distance = glm::length(displacement);
+    double distance = glm::length(displacement); // in AU
+    //distance = distance * 149597870700.0; // convert to meters
+    //distance = distance * 0.3;
     
-    // Apply softening parameter to avoid singularities when objects are very close
+    // clamp the distance to avoid singularities when objects are very close
     double softenedDistance = std::max(distance, softeningParameter);
     
     // Skip if objects are at the same position (after softening)
