@@ -20,11 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\ForceCalculator.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\GridGenerator.cpp" />
+    <ClCompile Include="src\Integrator.cpp" />
     <ClCompile Include="src\MassObject.cpp" />
     <ClCompile Include="src\MassObjectTracker.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\PhysicsEngine.cpp" />
     <ClCompile Include="src\Sphere.cpp" />
     <ClCompile Include="src\SphereRenderer.cpp" />
   </ItemGroup>
@@ -34,9 +37,12 @@
     <ClInclude Include="libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include\GLFW\glfw3.h" />
     <ClInclude Include="libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include\GLFW\glfw3native.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\ForceCalculator.h" />
     <ClInclude Include="src\GridGenerator.h" />
+    <ClInclude Include="src\Integrator.h" />
     <ClInclude Include="src\MassObject.h" />
     <ClInclude Include="src\MassObjectTracker.h" />
+    <ClInclude Include="src\PhysicsEngine.h" />
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\SphereRenderer.h" />
   </ItemGroup>

@@ -1,8 +1,13 @@
 #include "MassObjectTracker.h"
+#include "ForceCalculator.h"
+#include "Integrator.h"
 #include <glm/glm.hpp>
 #include <cmath>
+#include <iostream>
 
-MassObjectTracker::MassObjectTracker() {}
+MassObjectTracker::MassObjectTracker() {
+    physicsEngine = std::make_unique<PhysicsEngine>();
+}
 
 void MassObjectTracker::addMassObject(const MassObject& massObj) {
     massObjects.push_back(massObj);
@@ -59,6 +64,32 @@ float MassObjectTracker::getRadiusFromMass(double mass) const {
     // Scale radius based on mass 
     // Using cube root to make the volume proportional to mass
     return static_cast<float>(0.5 + 0.3 * std::cbrt(mass));
+}
+
+void MassObjectTracker::updatePhysics(double deltaTime) {
+    if (physicsEngine && !massObjects.empty()) {
+        physicsEngine->update(massObjects, deltaTime);
+    }
+}
+
+void MassObjectTracker::setPhysicsEnabled(bool enabled) {
+    if (physicsEngine) {
+        physicsEngine->setEnabled(enabled);
+    }
+}
+
+void MassObjectTracker::switchToEulerIntegrator() {
+    if (physicsEngine) {
+        physicsEngine->setIntegrator(std::make_unique<EulerIntegrator>());
+        std::cout << "Switched to Euler integration\n";
+    }
+}
+
+void MassObjectTracker::switchToVerletIntegrator() {
+    if (physicsEngine) {
+        physicsEngine->setIntegrator(std::make_unique<VerletIntegrator>());
+        std::cout << "Switched to Verlet integration\n";
+    }
 }
 
 glm::vec4 MassObjectTracker::getColorFromMass(double mass) const {

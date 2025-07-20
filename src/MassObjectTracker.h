@@ -1,7 +1,9 @@
 #pragma once
 #include "MassObject.h"
 #include "Sphere.h"
+#include "PhysicsEngine.h"
 #include <vector>
+#include <memory>
 
 class MassObjectTracker {
 public:
@@ -27,9 +29,17 @@ public:
     
     // Get count of mass objects
     size_t getCount() const;
+    
+    // Physics integration
+    void updatePhysics(double deltaTime);
+    void setPhysicsEnabled(bool enabled);
+    void switchToEulerIntegrator();
+    void switchToVerletIntegrator();
+    PhysicsEngine& getPhysicsEngine() { return *physicsEngine; }
 
 private:
     std::vector<MassObject> massObjects;
+    std::unique_ptr<PhysicsEngine> physicsEngine;
     
     // Helper function to determine sphere radius based on mass
     float getRadiusFromMass(double mass) const;

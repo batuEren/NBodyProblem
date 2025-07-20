@@ -6,6 +6,7 @@
 #include "GridGenerator.h"
 #include "Sphere.h"
 #include <iostream>
+#include <algorithm>
 #include "Camera.h"
 #include "MassObjectTracker.h"
 
@@ -35,6 +36,7 @@ void main() {
 )";
 
 Camera camera;
+MassObjectTracker* globalMassTracker = nullptr; // For keyboard callbacks
 
 void initializeCamera() {
     // Set camera for better grid visibility
@@ -78,6 +80,30 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         case GLFW_KEY_D:
             std::cout << "Right arrow pressed\n";
             camera.shiftSphereCoords(glm::vec2({ -0.05f, 0.0f }));
+            break;
+        case GLFW_KEY_SPACE:
+            // Toggle physics on/off
+            if (globalMassTracker) {
+                bool currentState = globalMassTracker->getPhysicsEngine().isEnabled();
+                globalMassTracker->setPhysicsEnabled(!currentState);
+                std::cout << "Physics " << (!currentState ? "enabled" : "disabled") << "\n";
+            }
+            break;
+        case GLFW_KEY_R:
+            // Reset simulation (you could implement this)
+            std::cout << "Reset simulation (not implemented yet)\n";
+            break;
+        case GLFW_KEY_E:
+            // Switch to Euler integrator
+            if (globalMassTracker) {
+                globalMassTracker->switchToEulerIntegrator();
+            }
+            break;
+        case GLFW_KEY_V:
+            // Switch to Verlet integrator
+            if (globalMassTracker) {
+                globalMassTracker->switchToVerletIntegrator();
+            }
             break;
         case GLFW_KEY_ESCAPE:
             glfwSetWindowShouldClose(window, true);
@@ -221,19 +247,48 @@ int main() {
     // Create sphere geometry (shared by all spheres)
     SphereGeometry sphereGeometry = generateSphereGeometry(32, 32);
 
-    // Create mass object tracker and add some example mass objects
+    // Create mass object tracker and add some example mass objects with initial velocities
     MassObjectTracker massTracker;
-    massTracker.addMassObject(MassObject(5.0, glm::vec2(0.0f, 0.0f)));      // Large mass at origin
-    massTracker.addMassObject(MassObject(2.0, glm::vec2(5.0f, 0.0f)));      // Medium mass
-    massTracker.addMassObject(MassObject(1.0, glm::vec2(-3.0f, 2.0f)));     // Small mass
-    massTracker.addMassObject(MassObject(8.0, glm::vec2(2.0f, -1.0f)));     // Large mass
-    massTracker.addMassObject(MassObject(3.5, glm::vec2(-5.0f, 1.5f)));     // Medium-large mass
+    globalMassTracker = &massTracker; // Set global pointer for keyboard callbacks
+    
+    // Add objects with interesting orbital-like initial velocities
+    massTracker.addMassObject(MassObject(10.0, glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));     // Large central mass (stationary)
+    //massTracker.addMassObject(MassObject(2.0, glm::vec2(5.0f, 0.0f), glm::vec2(0.0f, 2.0f)));      // Orbiting mass
+    massTracker.addMassObject(MassObject(1.0, glm::vec2(-3.0f, 0.0f), glm::vec2(0.0f, -1.5f)));    // Counter-orbiting mass
+    //massTracker.addMassObject(MassObject(1.5, glm::vec2(0.0f, 4.0f), glm::vec2(1.8f, 0.0f)));      // Another orbiting mass
+    //massTracker.addMassObject(MassObject(0.8, glm::vec2(-2.0f, -2.0f), glm::vec2(1.0f, 1.0f)));    // Small mass with diagonal motion
+    
+    // Configure physics (you can experiment with these values)
+    massTracker.getPhysicsEngine().setPhysicsTimestep(0.01); // 10ms physics timestep
+    
+    // Variables for timing and energy monitoring
+    double lastTime = glfwGetTime();
+    double physicsTime = 0.0;
+    double initialEnergy = massTracker.getPhysicsEngine().calculateTotalEnergy(massTracker.getMassObjects());
+    double energyCheckTimer = 0.0;
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         
-        // get input here
+        // Calculate time delta for physics
+        double currentTime = glfwGetTime();
+        double deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+        
+        // Update physics (limit to prevent huge time steps)
+        double clampedDeltaTime = std::min(deltaTime, 0.02); // Max 20ms per frame
+        massTracker.updatePhysics(clampedDeltaTime);
+        physicsTime += clampedDeltaTime;
+        
+        // Monitor energy conservation (print every 2 seconds)
+        energyCheckTimer += clampedDeltaTime;
+        if (energyCheckTimer >= 2.0) {
+            double currentEnergy = massTracker.getPhysicsEngine().calculateTotalEnergy(massTracker.getMassObjects());
+            double energyChange = ((currentEnergy - initialEnergy) / initialEnergy) * 100.0;
+            std::cout << "Energy change: " << energyChange << "% (Time: " << physicsTime << "s)\n";
+            energyCheckTimer = 0.0;
+        }
         
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
