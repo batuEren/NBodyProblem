@@ -24,13 +24,11 @@
         },
         {
             "name": "Debug with MSVC",
-            "type": "cppvsdbg",
+            "type": "node",
             "request": "launch",
             "program": "${workspaceFolder}/NBodyProblem.exe",
             "args": [],
-            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
             "console": "externalTerminal",
             "preLaunchTask": "build-msvc"
         },

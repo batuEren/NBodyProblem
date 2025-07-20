@@ -7,6 +7,7 @@
 #include "Sphere.h"
 #include <iostream>
 #include "Camera.h"
+#include "MassObjectTracker.h"
 
 
 const char* vertexShaderSource = R"(#version 460 core
@@ -220,13 +221,13 @@ int main() {
     // Create sphere geometry (shared by all spheres)
     SphereGeometry sphereGeometry = generateSphereGeometry(32, 32);
 
-    // Create example spheres with different positions, radii, and colors
-    std::vector<Sphere> spheres;
-    spheres.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 2.0f, glm::vec4(1.0f, 0.2f, 0.2f, 1.0f)); // Red sphere at origin
-    spheres.emplace_back(glm::vec3(5.0f, 0.0f, 0.0f), 1.5f, glm::vec4(0.2f, 1.0f, 0.2f, 1.0f)); // Green sphere
-    spheres.emplace_back(glm::vec3(-3.0f, 2.0f, 4.0f), 1.0f, glm::vec4(0.2f, 0.2f, 1.0f, 1.0f)); // Blue sphere
-    spheres.emplace_back(glm::vec3(2.0f, -1.0f, -6.0f), 0.8f, glm::vec4(1.0f, 1.0f, 0.2f, 1.0f)); // Yellow sphere
-    spheres.emplace_back(glm::vec3(-5.0f, 1.5f, -2.0f), 1.2f, glm::vec4(1.0f, 0.5f, 0.8f, 1.0f)); // Pink sphere
+    // Create mass object tracker and add some example mass objects
+    MassObjectTracker massTracker;
+    massTracker.addMassObject(MassObject(5.0, glm::vec2(0.0f, 0.0f)));      // Large mass at origin
+    massTracker.addMassObject(MassObject(2.0, glm::vec2(5.0f, 0.0f)));      // Medium mass
+    massTracker.addMassObject(MassObject(1.0, glm::vec2(-3.0f, 2.0f)));     // Small mass
+    massTracker.addMassObject(MassObject(8.0, glm::vec2(2.0f, -1.0f)));     // Large mass
+    massTracker.addMassObject(MassObject(3.5, glm::vec2(-5.0f, 1.5f)));     // Medium-large mass
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
@@ -260,8 +261,9 @@ int main() {
         glBindVertexArray(gridVAO);
         glDrawArrays(GL_LINES, 0, gridVertices.size() / 3);
 
-        // Draw spheres
+        // Draw spheres from mass objects
         glBindVertexArray(sphereGeometry.VAO);
+        std::vector<Sphere> spheres = massTracker.getAllSpheres();
         for (const auto& sphere : spheres) {
             glm::mat4 sphereModel = sphere.getModelMatrix();
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(sphereModel));

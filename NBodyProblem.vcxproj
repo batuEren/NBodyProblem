@@ -23,7 +23,10 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\GridGenerator.cpp" />
     <ClCompile Include="src\MassObject.cpp" />
+    <ClCompile Include="src\MassObjectTracker.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Sphere.cpp" />
+    <ClCompile Include="src\SphereRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\glad\glad.h" />
@@ -33,6 +36,9 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\GridGenerator.h" />
     <ClInclude Include="src\MassObject.h" />
+    <ClInclude Include="src\MassObjectTracker.h" />
+    <ClInclude Include="src\Sphere.h" />
+    <ClInclude Include="src\SphereRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />
