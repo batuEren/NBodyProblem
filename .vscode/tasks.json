@@ -1,0 +1,74 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "-std=c++17",
+                "-I./include",
+                "-I./libs/glfw-3.4.bin.WIN64/glfw-3.4.bin.WIN64/include",
+                "src/main.cpp",
+                "src/glad.c",
+                "src/Camera.cpp",
+                "src/GridGenerator.cpp",
+                "src/MassObject.cpp",
+                "src/Sphere.cpp",
+                "src/SphereRenderer.cpp",
+                "-L./libs/glfw-3.4.bin.WIN64/glfw-3.4.bin.WIN64/lib-mingw-w64",
+                "-lglfw3",
+                "-lopengl32",
+                "-lgdi32",
+                "-o",
+                "NBodyProblem.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build-msvc",
+            "type": "shell",
+            "command": "cl",
+            "args": [
+                "/EHsc",
+                "/std:c++17",
+                "/I./include",
+                "/I./libs/glfw-3.4.bin.WIN64/glfw-3.4.bin.WIN64/include",
+                "src/main.cpp",
+                "src/glad.c",
+                "src/Camera.cpp",
+                "src/GridGenerator.cpp",
+                "src/MassObject.cpp",
+                "src/Sphere.cpp",
+                "src/SphereRenderer.cpp",
+                "/link",
+                "/LIBPATH:./libs/glfw-3.4.bin.WIN64/glfw-3.4.bin.WIN64/lib-vc2022",
+                "glfw3.lib",
+                "opengl32.lib",
+                "user32.lib",
+                "gdi32.lib",
+                "shell32.lib",
+                "/OUT:NBodyProblem.exe"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$msCompile"]
+        }
+    ]
+} 
