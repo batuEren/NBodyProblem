@@ -51,7 +51,7 @@ glm::vec2 BruteForceCalculator::calculateGravitationalForce(const MassObject& ob
     return direction * static_cast<float>(forceMagnitude);
 }
 
-glm::vec2 BruteForceCalculator::calculateGravitationalField(const glm::vec2 point, const std::vector<MassObject>& massObjects) const {
+glm::vec2 BruteForceCalculator::calculateGravitationalField(const glm::vec2& point, const std::vector<MassObject>& massObjects) const {
     glm::vec2 field = glm::vec2{ 0.0, 0.0 };
     
     const size_t numObjects = massObjects.size();

@@ -10,6 +10,11 @@
 #include "Camera.h"
 #include "MassObjectTracker.h"
 
+// Dear ImGui includes
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+
 
 const char* vertexShaderSource = R"(#version 460 core
 layout(location = 0) in vec3 aPos;
@@ -37,6 +42,42 @@ void main() {
 
 Camera camera;
 MassObjectTracker* globalMassTracker = nullptr; // For keyboard callbacks
+
+// Basic ImGui interface function
+void createBasicGUI() {
+    // Create a window
+    ImGui::Begin("N-Body Simulation");
+    
+    // Display some text
+    ImGui::Text("Welcome to N-Body Physics Simulation!");
+    ImGui::Text("This is a basic ImGui interface.");
+    
+    // Add a separator line
+    ImGui::Separator();
+    
+    // Static variable to store button click count
+    static int buttonClickCount = 0;
+    
+    // Create a button
+    if (ImGui::Button("Click Me!")) {
+        buttonClickCount++;
+        std::cout << "Button clicked! Count: " << buttonClickCount << std::endl;
+    }
+    
+    // Display the click count
+    ImGui::Text("Button has been clicked %d times", buttonClickCount);
+    
+    // Add some simulation info
+    ImGui::Separator();
+    ImGui::Text("Controls:");
+    ImGui::BulletText("SPACE - Toggle physics on/off");
+    ImGui::BulletText("E - Switch to Euler integrator");
+    ImGui::BulletText("V - Switch to Verlet integrator");
+    ImGui::BulletText("WASD - Camera rotation");
+    ImGui::BulletText("Arrow keys - Camera movement");
+    
+    ImGui::End();
+}
 
 void initializeCamera() {
     // Set camera for better grid visibility
@@ -142,6 +183,19 @@ int main() {
         std::cerr << "Failed to initialize GLAD\n";
         return -1;
     }
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330 core");
 
     // Viewport
     glViewport(0, 0, 800, 600);
@@ -301,6 +355,11 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        
         // Calculate time delta for physics
         double currentTime = glfwGetTime();
         double deltaTime = currentTime - lastTime;
@@ -319,6 +378,9 @@ int main() {
             std::cout << "Energy change: " << energyChange << "% (Time: " << physicsTime << "s)\n";
             energyCheckTimer = 0.0;
         }
+        
+        // Create ImGui interface
+        createBasicGUI();
         
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -373,8 +435,17 @@ int main() {
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
+        // Render ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(window);
     }
+
+    // Cleanup ImGui
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     // Cleanup
     cleanupSphereGeometry(sphereGeometry);

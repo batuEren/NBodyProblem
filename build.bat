@@ -12,6 +12,17 @@ g++ -g -std=c++17 ^
     src/MassObject.cpp ^
     src/Sphere.cpp ^
     src/SphereRenderer.cpp ^
+    src/ForceCalculator.cpp ^
+    src/PhysicsEngine.cpp ^
+    src/MassObjectTracker.cpp ^
+    src/Integrator.cpp ^
+    include/imgui/imgui.cpp ^
+    include/imgui/imgui_demo.cpp ^
+    include/imgui/imgui_draw.cpp ^
+    include/imgui/imgui_tables.cpp ^
+    include/imgui/imgui_widgets.cpp ^
+    include/imgui/backends/imgui_impl_glfw.cpp ^
+    include/imgui/backends/imgui_impl_opengl3.cpp ^
     -L./libs/glfw-3.4.bin.WIN64/glfw-3.4.bin.WIN64/lib-mingw-w64 ^
     -lglfw3 -lopengl32 -lgdi32 ^
     -o NBodyProblem.exe
