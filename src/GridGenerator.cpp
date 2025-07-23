@@ -26,7 +26,7 @@ std::vector<float> generateGridVertices(int size, float spacing, const std::vect
     BruteForceCalculator calc(39.478); // Use the same G value as the physics engine
 
     // Scaling factor to make field visualization visible
-    float visualizationScale = 0.5f;
+    float visualizationScale = 2000.0f;
 
     for (int i = -size; i <= size; ++i) {
         // Lines parallel to Z-axis (X = constant)

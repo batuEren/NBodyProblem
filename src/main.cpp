@@ -67,6 +67,9 @@ void createBasicGUI() {
     // Display the click count
     ImGui::Text("Button has been clicked %d times", buttonClickCount);
     
+    int intVal = 10;
+    ImGui::SliderInt("Time Speed", &intVal, 1, 100);
+
     // Add some simulation info
     ImGui::Separator();
     ImGui::Text("Controls:");
@@ -427,13 +430,6 @@ int main() {
             
             glDrawElements(GL_TRIANGLES, sphereGeometry.vertexCount, GL_UNSIGNED_INT, 0);
         }
-
-        // Draw triangle (optional - you might want to remove this)
-        glm::mat4 model = glm::mat4(1.0f);
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glUniform4f(colorLoc, 1.0f, 0.5f, 0.2f, 1.0f);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // Render ImGui
         ImGui::Render();
