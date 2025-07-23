@@ -208,7 +208,9 @@ int main() {
     initializeCamera();
 
     //Camera Projection - increased bounds and moved near plane back
-    glm::mat4 projection = glm::ortho(-25.0f, 25.0f, -20.0f, 20.0f, 1.0f, 100.0f);
+    //glm::mat4 projection = glm::ortho(-25.0f, 25.0f, -20.0f, 20.0f, 1.0f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 25.0f / 20.0f, 1.0f, 100.0f);
+
 
     glm::mat4 model = glm::mat4(1.0f);
 
