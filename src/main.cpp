@@ -49,8 +49,8 @@ void createBasicGUI() {
     ImGui::Begin("N-Body Simulation");
     
     // Display some text
-    ImGui::Text("Welcome to N-Body Physics Simulation!");
-    ImGui::Text("This is a basic ImGui interface.");
+    ImGui::Text("Welcome to N-Body Physics Simulation by Batu Eren!");
+    //ImGui::Text("This is a basic ImGui interface.");
     
     // Add a separator line
     ImGui::Separator();
@@ -59,13 +59,13 @@ void createBasicGUI() {
     static int buttonClickCount = 0;
     
     // Create a button
-    if (ImGui::Button("Click Me!")) {
-        buttonClickCount++;
-        std::cout << "Button clicked! Count: " << buttonClickCount << std::endl;
-    }
+    //if (ImGui::Button("Click Me!")) {
+    //    buttonClickCount++;
+    //    std::cout << "Button clicked! Count: " << buttonClickCount << std::endl;
+    //}
     
     // Display the click count
-    ImGui::Text("Button has been clicked %d times", buttonClickCount);
+    //ImGui::Text("Button has been clicked %d times", buttonClickCount);
     
     int intVal = 10;
     ImGui::SliderInt("Time Speed", &intVal, 1, 100);
