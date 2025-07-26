@@ -19,7 +19,7 @@ std::vector<float> generateGridVertices(int size, float spacing) {
     return vertices;
 }
 
-std::vector<float> generateGridVertices(int size, float spacing, const std::vector<MassObject>& massObjects) {
+std::vector<float> generateGridVertices(int size, float spacing, const std::vector<MassObject>& massObjects) { // only creates the edge verticies rn must also have intersections
     std::vector<float> vertices;
     
     // Create calculator once outside the loop for efficiency

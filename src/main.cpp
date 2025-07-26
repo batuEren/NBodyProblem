@@ -264,16 +264,14 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // 0. copy our vertices array in a buffer for OpenGL to use
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    // 1. then set the vertex attributes pointers
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // 2. use our shader program when we want to render an object
+
     glUseProgram(shaderProgram);
-    // 3. now draw the object 
-    //someOpenGLFunctionThatDrawsOurTriangle();
 
 
     unsigned int VAO;
@@ -308,29 +306,29 @@ int main() {
     globalMassTracker = &massTracker; // Set global pointer for keyboard callbacks
     
     // Create realistic solar system example with proper astronomical units
-    // All masses in solar masses (M☉), distances in AU, velocities in AU/year
+    // All masses in solar masses (MS), distances in AU, velocities in AU/year
     // 
-    // REAL-WORLD ORBITAL VELOCITIES (for G = 39.478 AU³/(M☉·year²)):
-    // Formula: v = √(G*M/r) for circular orbit around central mass M
+    // REAL-WORLD ORBITAL VELOCITIES (for G = 39.478 AU^3/(MS·year²)):
+    // Formula: v = sqrt(G*M/r) for circular orbit around central mass M
     // - Earth at 1 AU: v = √(39.478*1.0/1.0) = 6.28 AU/year ≈ 29.8 km/s
-    // - Jupiter at 5.2 AU: v = √(39.478*1.0/5.2) = 2.76 AU/year ≈ 13.1 km/s
-    // - Mars at 1.52 AU: v = √(39.478*1.0/1.52) = 5.07 AU/year ≈ 24.1 km/s
+    // - Jupiter at 5.2 AU: v = sqrt(39.478*1.0/5.2) = 2.76 AU/year ≈ 13.1 km/s
+    // - Mars at 1.52 AU: v = sqrt(39.478*1.0/1.52) = 5.07 AU/year ≈ 24.1 km/s
     
     // Sun (1 solar mass at origin, stationary)
     massTracker.addMassObject(MassObject(1.0, glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
     
-    // Using real orbital velocities for G = 39.478
+    // Using real orbital velocities
     // Jupiter (0.001 solar masses at 5.2 AU with real orbital velocity)
-    massTracker.addMassObject(MassObject(0.001, glm::vec2(5.2f, 0.0f), glm::vec2(0.0f, 2.76f)));
+    //massTracker.addMassObject(MassObject(0.001, glm::vec2(5.2f, 0.0f), glm::vec2(0.0f, 2.76f)));
     
     // Earth (3×10⁻⁶ solar masses at 1 AU with real orbital velocity) 
-    massTracker.addMassObject(MassObject(3e-6, glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 6.28f)));
+    //massTracker.addMassObject(MassObject(3e-6, glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 6.28f)));
     
     // Mars (3.2×10⁻⁷ solar masses at 1.52 AU with real orbital velocity)
-    massTracker.addMassObject(MassObject(3.2e-7, glm::vec2(1.52f, 0.0f), glm::vec2(0.0f, 5.07f)));
+    //massTracker.addMassObject(MassObject(3.2e-7, glm::vec2(1.52f, 0.0f), glm::vec2(0.0f, 5.07f)));
     
     // Large asteroid (10⁻¹⁰ solar masses in asteroid belt at 2.8 AU)
-    massTracker.addMassObject(MassObject(1e-10, glm::vec2(2.8f, 0.0f), glm::vec2(0.0f, 3.76f)));
+    //massTracker.addMassObject(MassObject(1e-10, glm::vec2(2.8f, 0.0f), glm::vec2(0.0f, 3.76f)));
     
     // Configure physics timestep for real astronomical values (needs smaller timestep)
     massTracker.getPhysicsEngine().setPhysicsTimestep(0.0001); // 0.0001 years ≈ 0.88 hours

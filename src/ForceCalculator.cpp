@@ -3,7 +3,7 @@
 #include <algorithm>
 
 BruteForceCalculator::BruteForceCalculator(double gravitationalConstant)
-    : customG(gravitationalConstant), softeningParameter(0.001) {} // 0.001 AU ≈ 150,000 km (prevents close-encounter instabilities)
+    : customG(gravitationalConstant), softeningParameter(0.001) {} // 0.001 AU = 150,000 km (prevents close-encounter instabilities)
 
 std::vector<glm::vec2> BruteForceCalculator::calculateForces(const std::vector<MassObject>& massObjects) const {
     const size_t numObjects = massObjects.size();
@@ -41,9 +41,10 @@ glm::vec2 BruteForceCalculator::calculateGravitationalForce(const MassObject& ob
     }
     
     // Normalize displacement vector
-    glm::vec2 direction = displacement / static_cast<float>(distance);
+    //glm::vec2 direction = displacement / static_cast<float>(distance);
+    glm::vec2 direction = glm::normalize(displacement);
     
-    // Calculate gravitational force magnitude: F = G * m1 * m2 / r²
+    // Calculate gravitational force magnitude: F = G * m1 * m2 / r^2
     double forceMagnitude = (customG * obj1.getMass() * obj2.getMass()) / 
                            (softenedDistance * softenedDistance);
     
