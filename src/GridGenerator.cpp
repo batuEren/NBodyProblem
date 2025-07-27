@@ -32,11 +32,33 @@ std::vector<float> generateGridVertices(int size, float spacing, const std::vect
     std::vector<float> matrix(4*size*size, 0.0f);
 
     for (int x = -size; x <= size; ++x) {
-        for (int y = -size; y <= size; ++y) {
-
+        for (int z = -size; z <= size; ++z) {
+            float yCoord = -glm::length(calc.calculateGravitationalField(glm::vec2(x * spacing, z * spacing), massObjects)) * visualizationScale;
+            matrix.push_back(yCoord); // save each yCoord calculated in a matrix
+        }
+    }
+    for (int x = -size; x <= size; ++x) {// now put ycoord vals into a vector that is suitable to be drawn by GL_LINES
+        for (int z = -size; z <= size; ++z) {
+            if (x != -size) { //convert from 2d x,z coord to 1d coord index
+                vertices.push_back(x * spacing); vertices.push_back(matrix[(x+size)*2*size+ (z + size)]); vertices.push_back(z * spacing);
+                vertices.push_back((x-1) * spacing); vertices.push_back(matrix[((x + size) -1) * 2 * size + (z+size)]); vertices.push_back(z * spacing);
+            }
+            if (x != size) { 
+                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
+                vertices.push_back((x + 1)* spacing); vertices.push_back(matrix[((x + size) + 1) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
+            }
+            if (z != -size) { //convert from 2d x,z coord to 1d coord index
+                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
+                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + ((z + size) -1)]); vertices.push_back((z-1) * spacing);
+            }
+            if (z != size) { //convert from 2d x,z coord to 1d coord index
+                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
+                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + ((z + size) + 1)]); vertices.push_back((z + 1) * spacing);
+            }
         }
     }
 
+    /*
     for (int i = -size; i <= size; ++i) {
         // Lines parallel to Z-axis (X = constant)
         float yCoord1 = -glm::length(calc.calculateGravitationalField(glm::vec2(i * spacing, -size * spacing), massObjects)) * visualizationScale;
@@ -51,7 +73,7 @@ std::vector<float> generateGridVertices(int size, float spacing, const std::vect
 
         float yCoord4 = -glm::length(calc.calculateGravitationalField(glm::vec2(size * spacing, i * spacing), massObjects)) * visualizationScale;
         vertices.push_back(size * spacing); vertices.push_back(yCoord4); vertices.push_back(i * spacing);
-    }
+    }*/
 
     return vertices;
 }
