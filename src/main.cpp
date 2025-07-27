@@ -336,16 +336,15 @@ int main() {
     // Display system information
     std::cout << "=== N-Body Solar System Simulation ===" << std::endl;
     std::cout << "Units: AU (distance), Solar Masses (mass), Years (time)" << std::endl;
-    std::cout << "Physics: G = 39.478 AU³/(M☉·year²) [REAL VALUE]" << std::endl;
+    std::cout << "Physics: G = 39.478 AU³/(MS·year²) [REAL VALUE]" << std::endl;
     std::cout << "Objects created:" << std::endl;
-    std::cout << "- Sun: 1.0 M☉ at origin (stationary)" << std::endl;
-    std::cout << "- Jupiter: 0.001 M☉ at 5.2 AU (v = 2.76 AU/year ≈ 13.1 km/s)" << std::endl;
-    std::cout << "- Earth: 3×10⁻⁶ M☉ at 1.0 AU (v = 6.28 AU/year ≈ 29.8 km/s)" << std::endl;
-    std::cout << "- Mars: 3.2×10⁻⁷ M☉ at 1.52 AU (v = 5.07 AU/year ≈ 24.1 km/s)" << std::endl;
-    std::cout << "- Asteroid: 10⁻¹⁰ M☉ at 2.8 AU (v = 3.76 AU/year ≈ 17.9 km/s)" << std::endl;
+    std::cout << "- Sun: 1.0 MS at origin (stationary)" << std::endl;
+    std::cout << "- Jupiter: 0.001 MS at 5.2 AU (v = 2.76 AU/year ≈ 13.1 km/s)" << std::endl;
+    std::cout << "- Earth: 3×10⁻⁶ MS at 1.0 AU (v = 6.28 AU/year ≈ 29.8 km/s)" << std::endl;
+    std::cout << "- Mars: 3.2×10⁻⁷ MS at 1.52 AU (v = 5.07 AU/year ≈ 24.1 km/s)" << std::endl;
+    std::cout << "- Asteroid: 10⁻¹⁰ MS at 2.8 AU (v = 3.76 AU/year ≈ 17.9 km/s)" << std::endl;
     std::cout << "Physics timestep: 0.0001 years (≈0.88 hours) [Fine timestep for stability]" << std::endl;
     std::cout << "Controls: SPACE=physics on/off, E=Euler, V=Verlet" << std::endl;
-    std::cout << "Note: Using REAL orbital mechanics - Earth completes orbit in 1 year!" << std::endl;
     std::cout << "=========================================" << std::endl;
 
     // Variables for timing and energy monitoring

@@ -28,6 +28,15 @@ std::vector<float> generateGridVertices(int size, float spacing, const std::vect
     // Scaling factor to make field visualization visible
     float visualizationScale = 2000.0f;
 
+
+    std::vector<float> matrix(4*size*size, 0.0f);
+
+    for (int x = -size; x <= size; ++x) {
+        for (int y = -size; y <= size; ++y) {
+
+        }
+    }
+
     for (int i = -size; i <= size; ++i) {
         // Lines parallel to Z-axis (X = constant)
         float yCoord1 = -glm::length(calc.calculateGravitationalField(glm::vec2(i * spacing, -size * spacing), massObjects)) * visualizationScale;
