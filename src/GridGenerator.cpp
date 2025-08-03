@@ -33,7 +33,14 @@ std::vector<float> generateGridVertices(int size, float spacing, const std::vect
 
     for (int x = -size; x <= size; ++x) {
         for (int z = -size; z <= size; ++z) {
-            float yCoord = -glm::length(calc.calculateGravitationalField(glm::vec2(x * spacing, z * spacing), massObjects)) * visualizationScale;
+            float yCoord = glm::length(calc.calculateGravitationalField(glm::vec2(x * spacing, z * spacing), massObjects)) * visualizationScale;
+            //yCoord = -glm::log2(yCoord)/glm::log2(3.0f);
+            //yCoord = -(1 - 1/glm::sqrt(yCoord));
+            //yCoord = -yCoord / (yCoord + 3);
+            float alpha = 3.5f;
+            yCoord = -glm::log(1 + yCoord * alpha) / glm::log(1 + alpha);
+
+
             matrix.push_back(yCoord); // save each yCoord calculated in a matrix
         }
     }
