@@ -404,7 +404,9 @@ int main() {
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         // Update grid vertices based on current gravitational field
-        std::vector<float> gridVertices = generateGridVertices(20, 0.5f, massTracker.getMassObjects());
+        GridGenerator gg;
+
+        std::vector<float> gridVertices = gg.generateGridVertices(20, 0.5f, massTracker.getMassObjects());
         
         // Update the existing grid buffer with new data
         glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
