@@ -59,10 +59,8 @@ glm::vec2 BruteForceCalculator::calculateGravitationalField(const glm::vec2& poi
 
     // Calculate forces for all obj
     for (size_t i = 0; i < numObjects; ++i) {
-        for (size_t j = i + 1; j < numObjects; ++j) {
-            glm::vec2 force = calculateGravitationalForce(MassObject(1.0, point), massObjects[j]);
-            field += force;
-        }
+        glm::vec2 force = calculateGravitationalForce(MassObject(1.0, point), massObjects[i]);
+        field += force;
     }
 
     return field;

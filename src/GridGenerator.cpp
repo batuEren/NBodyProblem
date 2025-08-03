@@ -26,10 +26,10 @@ std::vector<float> generateGridVertices(int size, float spacing, const std::vect
     BruteForceCalculator calc(39.478); // Use the same G value as the physics engine
 
     // Scaling factor to make field visualization visible
-    float visualizationScale = 2000.0f;
+    float visualizationScale = 1.0f;
 
 
-    std::vector<float> matrix(4*size*size, 0.0f);
+    std::vector<float> matrix;
 
     for (int x = -size; x <= size; ++x) {
         for (int z = -size; z <= size; ++z) {
@@ -40,21 +40,21 @@ std::vector<float> generateGridVertices(int size, float spacing, const std::vect
     for (int x = -size; x <= size; ++x) {// now put ycoord vals into a vector that is suitable to be drawn by GL_LINES
         for (int z = -size; z <= size; ++z) {
             if (x != -size) { //convert from 2d x,z coord to 1d coord index
-                vertices.push_back(x * spacing); vertices.push_back(matrix[(x+size)*2*size+ (z + size)]); vertices.push_back(z * spacing);
-                vertices.push_back((x-1) * spacing); vertices.push_back(matrix[((x + size) -1) * 2 * size + (z+size)]); vertices.push_back(z * spacing);
+                vertices.push_back(x * spacing); vertices.push_back(matrix[(x+size)*(2*size+1)+ (z + size)]); vertices.push_back(z * spacing);
+                vertices.push_back((x-1) * spacing); vertices.push_back(matrix[((x + size) -1) * (2*size+1) + (z+size)]); vertices.push_back(z * spacing);
             }
-            if (x != size) { 
-                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
-                vertices.push_back((x + 1)* spacing); vertices.push_back(matrix[((x + size) + 1) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
-            }
+            //if (x != size) { 
+            //    vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
+            //    vertices.push_back((x + 1)* spacing); vertices.push_back(matrix[((x + size) + 1) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
+            //}
             if (z != -size) { //convert from 2d x,z coord to 1d coord index
-                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
-                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + ((z + size) -1)]); vertices.push_back((z-1) * spacing);
+                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * (2*size+1) + (z + size)]); vertices.push_back(z * spacing);
+                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * (2*size+1) + ((z + size) -1)]); vertices.push_back((z-1) * spacing);
             }
-            if (z != size) { //convert from 2d x,z coord to 1d coord index
-                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + (z + size)]); vertices.push_back(z * spacing);
-                vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * 2 * size + ((z + size) + 1)]); vertices.push_back((z + 1) * spacing);
-            }
+            //if (z != size) { //convert from 2d x,z coord to 1d coord index
+            //    vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * (2*size+1) + (z + size)]); vertices.push_back(z * spacing);
+            //    vertices.push_back(x * spacing); vertices.push_back(matrix[(x + size) * (2*size+1) + ((z + size) + 1)]); vertices.push_back((z + 1) * spacing);
+            //}
         }
     }
 

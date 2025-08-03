@@ -328,7 +328,7 @@ int main() {
     massTracker.addMassObject(MassObject(3.2e-7, glm::vec2(1.52f, 0.0f), glm::vec2(0.0f, 5.07f)));
     
     // Large asteroid (10⁻¹⁰ solar masses in asteroid belt at 2.8 AU)
-    massTracker.addMassObject(MassObject(1e-10, glm::vec2(2.8f, 0.0f), glm::vec2(0.0f, 3.76f)));
+    //massTracker.addMassObject(MassObject(1e-10, glm::vec2(2.8f, 0.0f), glm::vec2(0.0f, 3.76f)));
     
     // Configure physics timestep for real astronomical values (needs smaller timestep)
     massTracker.getPhysicsEngine().setPhysicsTimestep(0.0001); // 0.0001 years ≈ 0.88 hours
