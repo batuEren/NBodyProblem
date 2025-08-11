@@ -42,6 +42,7 @@ void main() {
 
 Camera camera;
 MassObjectTracker* globalMassTracker = nullptr; // For keyboard callbacks
+static float g_timeScale = 1.0f;
 
 // Basic ImGui interface function
 void createBasicGUI() {
@@ -85,7 +86,7 @@ void createBasicGUI() {
 void initializeCamera() {
     // Set camera for better grid visibility
     camera.setLookAt(glm::vec3(0.0f, 0.0f, 0.0f));  // Look at center
-    camera.setRadius(25.0f);  // Move camera further back
+    camera.setRadius(27.0f);  // Move camera further back
     camera.setSphereCoords(glm::vec2(glm::pi<float>() / 4.0f, glm::pi<float>() / 6.0f));  // Better angle
 }
 
@@ -201,7 +202,7 @@ int main() {
     ImGui_ImplOpenGL3_Init("#version 330 core");
 
     // Viewport
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 1920, 1080);
     glEnable(GL_DEPTH_TEST);
 
     // Initialize camera for better visibility
@@ -209,7 +210,7 @@ int main() {
 
     //Camera Projection - increased bounds and moved near plane back
     //glm::mat4 projection = glm::ortho(-25.0f, 25.0f, -20.0f, 20.0f, 1.0f, 100.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 25.0f / 20.0f, 1.0f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 1.0f, 100.0f);
 
 
     glm::mat4 model = glm::mat4(1.0f);
@@ -319,13 +320,17 @@ int main() {
     
     // Using real orbital velocities
     // Jupiter (0.001 solar masses at 5.2 AU with real orbital velocity)
-    massTracker.addMassObject(MassObject(0.001, glm::vec2(5.2f, 0.0f), glm::vec2(0.0f, 2.76f)));
+    //massTracker.addMassObject(MassObject(0.001, glm::vec2(5.2f, 0.0f), glm::vec2(0.0f, 2.76f)));
+    //Ganymede, jupiters biggest moon (7.5×10^-9 solar masses, 0.0071 AU orbit 2.29 AU orbital velo)
+    //massTracker.addMassObject(MassObject(7.5e-9, glm::vec2(5.2071f, 0.0f), glm::vec2(0.0f, -2.29f)));
+
+
     
     // Earth (3×10⁻⁶ solar masses at 1 AU with real orbital velocity) 
-    massTracker.addMassObject(MassObject(3e-6, glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 6.28f)));
+    //massTracker.addMassObject(MassObject(3e-6, glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 6.28f)));
     
     // Mars (3.2×10⁻⁷ solar masses at 1.52 AU with real orbital velocity)
-    massTracker.addMassObject(MassObject(3.2e-7, glm::vec2(1.52f, 0.0f), glm::vec2(0.0f, 5.07f)));
+    //massTracker.addMassObject(MassObject(3.2e-7, glm::vec2(1.52f, 0.0f), glm::vec2(0.0f, 5.07f)));
     
     // Large asteroid (10⁻¹⁰ solar masses in asteroid belt at 2.8 AU)
     //massTracker.addMassObject(MassObject(1e-10, glm::vec2(2.8f, 0.0f), glm::vec2(0.0f, 3.76f)));

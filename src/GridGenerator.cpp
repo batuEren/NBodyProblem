@@ -42,10 +42,13 @@ std::vector<float> GridGenerator::generateGridVertices(int size, float spacing, 
             //yCoord = -glm::log2(yCoord)/glm::log2(3.0f);
             //yCoord = -(1 - 1/glm::sqrt(yCoord));
             //yCoord = -yCoord / (yCoord + 3);
-            float alpha = 33.5f;
-            yCoord = -glm::log(1 + yCoord * alpha) / glm::log(1 + alpha);
 
-            float changeCoef = 0.1f;
+            //float alpha = 3.5f;
+            //yCoord = -glm::log(1 + yCoord * alpha) / glm::log(1 + alpha);
+
+            yCoord = -glm::log(glm::sqrt(glm::sqrt(yCoord))) * 10.0f;
+
+            float changeCoef = 0.15f;
 
             lastMatrix[(x + size) * (2 * size + 1) + (z + size)] = lastMatrix[(x + size) * (2 * size + 1) + (z + size)] * (1.0f - changeCoef)
                 + yCoord * changeCoef;
