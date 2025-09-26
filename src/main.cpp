@@ -43,6 +43,8 @@ void main() {
 Camera camera;
 MassObjectTracker* globalMassTracker = nullptr; // For keyboard callbacks
 static float g_timeScale = 1.0f;
+static int forceCalcInUse = 0; //0 for BruteForce, 1 for Barnes-Hut, in use currently
+static int forceCalculatorSelected = 0; //selected by user
 
 // Basic ImGui interface function
 void createBasicGUI() {
@@ -75,10 +77,8 @@ void createBasicGUI() {
     ImGui::Text("Select Simulation Algorithm");
 
     static const char* items[] = { "Direct Pairwise O(N²)", "Barnes-Hut Tree O(N log(N))", "Fast Multipole Method O(N)" };
-
-    static int current_item = 0;
     
-    ImGui::Combo(" ", &current_item, items, IM_ARRAYSIZE(items));
+    ImGui::Combo(" ", &forceCalculatorSelected, items, IM_ARRAYSIZE(items));
 
 
     // Add some simulation info
@@ -181,7 +181,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Modern OpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "N-Body Simulation", NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create GLFW window\n";
         glfwTerminate();
@@ -387,6 +387,16 @@ int main() {
         double clampedDeltaTime = std::min(deltaTime, 0.02); // Max 20ms per frame
         double scaledDeltaTime = clampedDeltaTime * static_cast<double>(g_timeScale);
         massTracker.updatePhysics(scaledDeltaTime);
+        if (forceCalculatorSelected != forceCalcInUse) {
+            forceCalcInUse = forceCalculatorSelected;
+            if (forceCalculatorSelected == 0) { //brute force
+                massTracker.switchToBruteForce();
+            }
+            else if (forceCalculatorSelected == 1) {
+                massTracker.switchToBarnesHut();
+            }
+        }
+
         physicsTime += scaledDeltaTime;
 
         // Monitor energy conservation (print every 2 seconds of simulation time)

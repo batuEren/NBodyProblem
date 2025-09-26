@@ -37,4 +37,5 @@ std::vector<glm::vec2> BarnesHutCalculator::calculateForces(const std::vector<Ma
     }
 
     return forces;
+    //return std::vector<glm::vec2>(n, { 0.0f, 0.0f });
 }

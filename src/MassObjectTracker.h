@@ -35,6 +35,8 @@ public:
     void setPhysicsEnabled(bool enabled);
     void switchToEulerIntegrator();
     void switchToVerletIntegrator();
+    void switchToBruteForce(double G = 39.478, double softening = 0.001);
+    void switchToBarnesHut(double G = 39.478, double theta = 0.5, double softening = 0.001);
     PhysicsEngine& getPhysicsEngine() { return *physicsEngine; }
 
 private:

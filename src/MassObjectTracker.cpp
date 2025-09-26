@@ -1,5 +1,6 @@
 #include "MassObjectTracker.h"
 #include "ForceCalculator.h"
+#include "BarnesHutCalculator.h";
 #include "Integrator.h"
 #include <glm/glm.hpp>
 #include <cmath>
@@ -62,20 +63,7 @@ size_t MassObjectTracker::getCount() const {
 }
 
 float MassObjectTracker::getRadiusFromMass(double mass) const {
-    // Logarithmic scaling - perfect for massive range of solar masses
-    // Formula: baseRadius + scaleFactor × (log10(mass) - minLog) / (maxLog - minLog)
-    // 
-    // This handles the huge range from Sun (1.0 M☉) to asteroids (10⁻¹⁰ M☉)
-    // Sun: log10(1.0) = 0 → max radius
-    // Jupiter: log10(0.001) = -3 → 70% of max
-    // Earth: log10(3e-6) ≈ -5.5 → 45% of max  
-    // Asteroid: log10(1e-10) = -10 → min radius
-    //
-    // To adjust:
-    // - Change minLog/maxLog to adjust the mass range
-    // - Increase scaleFactor (0.15f) to make size differences more pronounced
-    // - Increase baseRadius (0.05f) to make smallest objects bigger
-    // - Adjust max clamp (0.25f) to change largest object size
+    // Logarithmic scaling
     
     // Use log10 scaling with offset
     double logMass = std::log10(std::max(mass, 1e-12)); // Prevent log(0)
@@ -103,6 +91,22 @@ void MassObjectTracker::updatePhysics(double deltaTime) {
 void MassObjectTracker::setPhysicsEnabled(bool enabled) {
     if (physicsEngine) {
         physicsEngine->setEnabled(enabled);
+    }
+}
+
+void MassObjectTracker::switchToBruteForce(double G, double softening) {
+    if (physicsEngine) {
+        auto calc = std::make_unique<BruteForceCalculator>(G);
+        calc->setSofteningParameter(softening);
+        physicsEngine->setForceCalculator(std::move(calc));
+        std::cout << "Switched to BruteForce calculator\n";
+    }
+}
+
+void MassObjectTracker::switchToBarnesHut(double G, double theta, double softening) {
+    if (physicsEngine) {
+        physicsEngine->setForceCalculator(std::make_unique<BarnesHutCalculator>(G, theta, softening));
+        std::cout << "Switched to BarnesHut calculator (theta=" << theta << ")\n";
     }
 }
 
