@@ -23,6 +23,7 @@ std::vector<glm::vec2> BruteForceCalculator::calculateForces(const std::vector<M
     return forces;
 }
 
+
 glm::vec2 BruteForceCalculator::calculateGravitationalForce(const MassObject& obj1, const MassObject& obj2) const {
     // Vector from obj1 to obj2
     glm::vec2 displacement = obj2.getPosition() - obj1.getPosition(); // in AU

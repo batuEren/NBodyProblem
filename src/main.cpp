@@ -68,8 +68,18 @@ void createBasicGUI() {
     // Display the click count
     //ImGui::Text("Button has been clicked %d times", buttonClickCount);
     
-    int intVal = 10;
-    ImGui::SliderInt("Time Speed", &intVal, 1, 100);
+    ImGui::SliderFloat("Time Speed", &g_timeScale, 0.1f, 10.0f);
+
+    ImGui::Separator();
+
+    ImGui::Text("Select Simulation Algorithm");
+
+    static const char* items[] = { "Direct Pairwise O(N²)", "Barnes-Hut Tree O(N log(N))", "Fast Multipole Method O(N)" };
+
+    static int current_item = 0;
+    
+    ImGui::Combo(" ", &current_item, items, IM_ARRAYSIZE(items));
+
 
     // Add some simulation info
     ImGui::Separator();
@@ -320,20 +330,20 @@ int main() {
     
     // Using real orbital velocities
     // Jupiter (0.001 solar masses at 5.2 AU with real orbital velocity)
-    //massTracker.addMassObject(MassObject(0.001, glm::vec2(5.2f, 0.0f), glm::vec2(0.0f, 2.76f)));
+    massTracker.addMassObject(MassObject(0.001, glm::vec2(5.2f, 0.0f), glm::vec2(0.0f, 2.76f)));
     //Ganymede, jupiters biggest moon (7.5×10^-9 solar masses, 0.0071 AU orbit 2.29 AU orbital velo)
-    //massTracker.addMassObject(MassObject(7.5e-9, glm::vec2(5.2071f, 0.0f), glm::vec2(0.0f, -2.29f)));
+    massTracker.addMassObject(MassObject(7.5e-9, glm::vec2(5.2071f, 0.0f), glm::vec2(0.0f, -2.29f)));
 
 
     
     // Earth (3×10⁻⁶ solar masses at 1 AU with real orbital velocity) 
-    //massTracker.addMassObject(MassObject(3e-6, glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 6.28f)));
+    massTracker.addMassObject(MassObject(3e-6, glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 6.28f)));
     
     // Mars (3.2×10⁻⁷ solar masses at 1.52 AU with real orbital velocity)
-    //massTracker.addMassObject(MassObject(3.2e-7, glm::vec2(1.52f, 0.0f), glm::vec2(0.0f, 5.07f)));
+    massTracker.addMassObject(MassObject(3.2e-7, glm::vec2(1.52f, 0.0f), glm::vec2(0.0f, 5.07f)));
     
     // Large asteroid (10⁻¹⁰ solar masses in asteroid belt at 2.8 AU)
-    //massTracker.addMassObject(MassObject(1e-10, glm::vec2(2.8f, 0.0f), glm::vec2(0.0f, 3.76f)));
+    massTracker.addMassObject(MassObject(1e-10, glm::vec2(2.8f, 0.0f), glm::vec2(0.0f, 3.76f)));
     
     // Configure physics timestep for real astronomical values (needs smaller timestep)
     massTracker.getPhysicsEngine().setPhysicsTimestep(0.0001); // 0.0001 years ≈ 0.88 hours
@@ -368,24 +378,26 @@ int main() {
         ImGui::NewFrame();
         
         // Calculate time delta for physics
+            // Calculate time delta for physics
         double currentTime = glfwGetTime();
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
-        
+
         // Update physics (limit to prevent huge time steps)
         double clampedDeltaTime = std::min(deltaTime, 0.02); // Max 20ms per frame
-        massTracker.updatePhysics(clampedDeltaTime);
-        physicsTime += clampedDeltaTime;
-        
-        // Monitor energy conservation (print every 2 seconds)
-        energyCheckTimer += clampedDeltaTime;
+        double scaledDeltaTime = clampedDeltaTime * static_cast<double>(g_timeScale);
+        massTracker.updatePhysics(scaledDeltaTime);
+        physicsTime += scaledDeltaTime;
+
+        // Monitor energy conservation (print every 2 seconds of simulation time)
+        energyCheckTimer += scaledDeltaTime;
         if (energyCheckTimer >= 2.0) {
             double currentEnergy = massTracker.getPhysicsEngine().calculateTotalEnergy(massTracker.getMassObjects());
             double energyChange = ((currentEnergy - initialEnergy) / initialEnergy) * 100.0;
-            std::cout << "Energy change: " << energyChange << "% (Time: " << physicsTime << "s)\n";
+            std::cout << "Energy change: " << energyChange << "% (Time: " << physicsTime << ")\n";
             energyCheckTimer = 0.0;
         }
-        
+
         // Create ImGui interface
         createBasicGUI();
         

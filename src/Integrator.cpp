@@ -25,6 +25,8 @@ void EulerIntegrator::integrate(std::vector<MassObject>& massObjects,
     }
 }
 
+
+// verlets method of integration, 2nd order of accuracy
 void VerletIntegrator::integrate(std::vector<MassObject>& massObjects, 
                                 const std::vector<glm::vec2>& forces, 
                                 double deltaTime) const {
