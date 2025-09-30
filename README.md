@@ -7,12 +7,11 @@ An interactive N-body gravity simulation with 2D physics and 3D rendering, featu
 ### Physics Engine
 - **Realistic Units**: AU (distance), Solar Masses (mass), Years (time)
 - **Gravitational Constant**: 39.478 AU³/(M☉·year²)
-- **Multiple Integrators**: Euler and Velocity Verlet
 - **Force Calculation Methods**:
   - Direct pairwise O(N²)
   - Barnes-Hut tree O(N log N)
-  - Fast Multipole Method O(N) (placeholder)
-- **Stable Timestep**: Internal physics sub-stepping for stability
+  - Fast Multipole Method O(N) (Not yet implemented)
+- **Stable Timestep**: Internal physics sub-stepping for stability, default 0.0001 year.
 
 ### Rendering
 - **OpenGL 3.3 Core**: Modern OpenGL with GLAD and GLFW
@@ -22,7 +21,7 @@ An interactive N-body gravity simulation with 2D physics and 3D rendering, featu
 - **ImGui Interface**: Real-time controls and algorithm selection
 
 ### Example Solar System
-- Sun, Earth, Mars, Jupiter, Ganymede, and asteroid
+- Sun, Earth, Mars, Jupiter, Ganymede, and an asteroid
 - Realistic orbital velocities for circular orbits
 - Proper mass ratios and distances
 
@@ -91,7 +90,7 @@ build.bat
 - `E`: Switch to Euler integrator
 - `V`: Switch to Velocity Verlet integrator
 - `W/A/S/D`: Rotate camera (spherical coordinates)
-- Arrow Keys: Move camera
+- `Arrow Keys`: Move camera
 - `ESC`: Exit application
 
 ## Configuration
@@ -112,7 +111,7 @@ massTracker.switchToVerletIntegrator();
 
 ### Adding Mass Objects
 ```cpp
-// Mass in M☉, position in AU, velocity in AU/year
+// Mass in M☉ (solar masses), position in AU, velocity in AU/year
 massTracker.addMassObject(MassObject(1.0, {0.0f, 0.0f}, {0.0f, 0.0f})); // Sun
 massTracker.addMassObject(MassObject(3e-6, {1.0f, 0.0f}, {0.0f, 6.28f})); // Earth
 ```
@@ -135,6 +134,7 @@ All dependencies are included in the repository:
 
 - [ ] Implement Fast Multipole Method
 - [ ] Add reset functionality
+- [ ] Example Galaxy Scene
 - [ ] Scene presets and save/load
 - [ ] Camera mode toggle (orthographic/perspective)
 - [ ] External shader file support
