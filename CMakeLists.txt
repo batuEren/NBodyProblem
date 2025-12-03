@@ -1,131 +1,120 @@
 cmake_minimum_required(VERSION 3.20)
+
 project(NBodyProblem LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+# --- General compiler settings ---
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(BUILD_EXAMPLE "Build the alternative example_with_sphere_renderer executable" ON)
+# --- Sources ---
+set(SOURCES
+    src/QuadTree.cpp
+    src/BarnesHutCalculator.cpp
+    src/Camera.cpp
+    src/ForceCalculator.cpp
+    src/glad.c
+    src/GridGenerator.cpp
+    src/Integrator.cpp
+    src/MassObject.cpp
+    src/MassObjectTracker.cpp
+    src/main.cpp
+    src/PhysicsEngine.cpp
+    src/Sphere.cpp
+    src/SphereRenderer.cpp
 
-# Paths
-set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
-set(INC_DIR "${CMAKE_SOURCE_DIR}/include")
-set(GLFW_BUNDLE_ROOT "${CMAKE_SOURCE_DIR}/libs/glfw-3.4.bin.WIN64/glfw-3.4.bin.WIN64")
-
-# Include dirs (GLM, ImGui, GLAD)
-set(PROJ_INCLUDE_DIRS
-    "${INC_DIR}"
-    "${INC_DIR}/glad"
-    "${INC_DIR}/glm"
-    "${INC_DIR}/imgui"
-    "${INC_DIR}/imgui/backends"
+    include/imgui/imgui.cpp
+    include/imgui/imgui_demo.cpp
+    include/imgui/imgui_draw.cpp
+    include/imgui/imgui_tables.cpp
+    include/imgui/imgui_widgets.cpp
+    include/imgui/backends/imgui_impl_glfw.cpp
+    include/imgui/backends/imgui_impl_opengl3.cpp
 )
 
-# Source lists
-set(COMMON_CPP_SOURCES
-    "${SRC_DIR}/BarnesHutCalculator.cpp"
-    "${SRC_DIR}/Camera.cpp"
-    "${SRC_DIR}/ForceCalculator.cpp"
-    "${SRC_DIR}/GridGenerator.cpp"
-    "${SRC_DIR}/Integrator.cpp"
-    "${SRC_DIR}/MassObject.cpp"
-    "${SRC_DIR}/MassObjectTracker.cpp"
-    "${SRC_DIR}/PhysicsEngine.cpp"
-    "${SRC_DIR}/QuadTree.cpp"
-    "${SRC_DIR}/Sphere.cpp"
-    "${SRC_DIR}/SphereRenderer.cpp"
+# Optional: shaders just so they show up in IDEs
+set(SHADERS
+    src/vertex.glsl
+    src/fragment.glsl
 )
 
-set(GLAD_SOURCES
-    "${SRC_DIR}/glad.c"
+add_executable(NBodyProblem
+    ${SOURCES}
+    ${SHADERS}
 )
 
-set(IMGUI_SOURCES
-    "${INC_DIR}/imgui/imgui.cpp"
-    "${INC_DIR}/imgui/imgui_draw.cpp"
-    "${INC_DIR}/imgui/imgui_tables.cpp"
-    "${INC_DIR}/imgui/imgui_widgets.cpp"
-    "${INC_DIR}/imgui/backends/imgui_impl_glfw.cpp"
-    "${INC_DIR}/imgui/backends/imgui_impl_opengl3.cpp"
+# --- Includes ---
+target_include_directories(NBodyProblem
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/imgui
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/glm
+        ${CMAKE_CURRENT_SOURCE_DIR}/libs/glfw-3.4.bin.WIN64/glfw-3.4.bin.WIN64/include
 )
 
-# Platform OpenGL/GLFW
+# --- Preprocessor definitions ---
+target_compile_definitions(NBodyProblem
+    PRIVATE
+        _CONSOLE
+        $<$<CONFIG:Debug>:_DEBUG>
+        $<$<CONFIG:Release>:NDEBUG>
+)
+
+# --- Compiler options per compiler ---
+if (MSVC)
+    target_compile_options(NBodyProblem PRIVATE /W3 /permissive-)
+    target_compile_definitions(NBodyProblem PRIVATE WIN32)
+else()
+    # Nice warnings on gcc/clang
+    target_compile_options(NBodyProblem PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+# --- Link libraries per platform ---
 if (WIN32)
-    # Use bundled GLFW on Windows
-    set(GLFW_INCLUDE_DIR "${GLFW_BUNDLE_ROOT}/include")
+    # Use prebuilt GLFW shipped in the repo
+    set(GLFW_LIB_DIR
+        ${CMAKE_CURRENT_SOURCE_DIR}/libs/glfw-3.4.bin.WIN64/glfw-3.4.bin.WIN64/lib-vc2022
+    )
 
-    if (MSVC)
-        set(GLFW_LIB_DIR "${GLFW_BUNDLE_ROOT}/lib-vc2022")
-        # Prefer fully static multithreaded lib to avoid DLL deployment
-        set(GLFW_LIB "${GLFW_LIB_DIR}/glfw3_mt.lib")
-        set(PLATFORM_LIBS
-            "${GLFW_LIB}"
+    target_link_directories(NBodyProblem PRIVATE ${GLFW_LIB_DIR})
+
+    target_link_libraries(NBodyProblem
+        PRIVATE
+            glfw3
             opengl32
             user32
             gdi32
             shell32
-            ole32
-            winmm
-        )
-    else()
-        # MinGW
-        set(GLFW_LIB_DIR "${GLFW_BUNDLE_ROOT}/lib-mingw-w64")
-        set(GLFW_LIB "${GLFW_LIB_DIR}/libglfw3.a")
-        set(PLATFORM_LIBS
-            "${GLFW_LIB}"
-            opengl32
-            gdi32
-        )
-    endif()
+    )
 
-    list(APPEND PROJ_INCLUDE_DIRS "${GLFW_INCLUDE_DIR}")
-else()
-    # Non-Windows: use system GLFW and OpenGL
-    find_package(glfw3 REQUIRED)
+elseif(APPLE)
+    # On macOS, install glfw via Homebrew: brew install glfw
     find_package(OpenGL REQUIRED)
+    find_package(glfw3 3.3 REQUIRED)
 
-    set(PLATFORM_LIBS
-        glfw
-        OpenGL::GL
+    # Package name may vary; adjust glfw/glfw3::glfw if CMake errors
+    target_link_libraries(NBodyProblem
+        PRIVATE
+            glfw       # or glfw3::glfw depending on your install
+            OpenGL::GL
     )
 
-    if (UNIX AND NOT APPLE)
-        list(APPEND PLATFORM_LIBS
-            dl
+elseif(UNIX)
+    # On Linux, e.g.:
+    #   sudo apt install libglfw3-dev mesa-common-dev
+    find_package(OpenGL REQUIRED)
+    find_package(glfw3 3.3 REQUIRED)
+
+    # Package name may vary; adjust glfw/glfw3::glfw as needed
+    target_link_libraries(NBodyProblem
+        PRIVATE
+            glfw       # or glfw3::glfw depending on distro
+            OpenGL::GL
             pthread
-            X11
-        )
-    endif()
-endif()
-
-# Main executable
-add_executable(NBodyProblem
-    ${COMMON_CPP_SOURCES}
-    ${GLAD_SOURCES}
-    ${IMGUI_SOURCES}
-    "${SRC_DIR}/main.cpp"
-)
-
-target_include_directories(NBodyProblem PRIVATE ${PROJ_INCLUDE_DIRS})
-target_compile_definitions(NBodyProblem PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
-target_link_libraries(NBodyProblem PRIVATE ${PLATFORM_LIBS})
-
-# Optional example executable (replaces main.cpp with example_with_sphere_renderer.cpp)
-if (BUILD_EXAMPLE)
-    add_executable(SphereExample
-        ${COMMON_CPP_SOURCES}
-        ${GLAD_SOURCES}
-        ${IMGUI_SOURCES}
-        "${SRC_DIR}/example_with_sphere_renderer.cpp"
+            dl
     )
-    target_include_directories(SphereExample PRIVATE ${PROJ_INCLUDE_DIRS})
-    target_compile_definitions(SphereExample PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
-    target_link_libraries(SphereExample PRIVATE ${PLATFORM_LIBS})
 endif()
 
-# Organize in IDEs
-source_group(TREE "${CMAKE_SOURCE_DIR}" FILES
-    ${COMMON_CPP_SOURCES} ${GLAD_SOURCES} ${IMGUI_SOURCES}
-    "${SRC_DIR}/main.cpp" "${SRC_DIR}/example_with_sphere_renderer.cpp"
-)
-
-
+# --- Nice folder view in IDEs ---
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES} ${SHADERS})

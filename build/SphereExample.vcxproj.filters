@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\BarnesHutCalculator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\Camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\ForceCalculator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\GridGenerator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\Integrator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\MassObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\MassObjectTracker.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\PhysicsEngine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\QuadTree.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\Sphere.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\SphereRenderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\glad.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\include\imgui\imgui.cpp">
+      <Filter>include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\include\imgui\imgui_draw.cpp">
+      <Filter>include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\include\imgui\imgui_tables.cpp">
+      <Filter>include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\include\imgui\imgui_widgets.cpp">
+      <Filter>include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\include\imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>include\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\include\imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>include\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Dosyalar\Simulations\NBodyProblem\src\example_with_sphere_renderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Dosyalar\Simulations\NBodyProblem\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{57B97D96-6A4B-31C3-8B57-C4477B908305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\imgui">
+      <UniqueIdentifier>{43A3CCB6-D0E8-3DCC-9395-C82DD9BACC7F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\imgui\backends">
+      <UniqueIdentifier>{8761044C-D17A-30A0-B531-13A045921E93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{23E9FA4B-7CBC-3C11-A8EB-34C822D8F086}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
