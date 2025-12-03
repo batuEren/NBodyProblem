@@ -2,6 +2,8 @@
 
 An interactive N-body gravity simulation with 2D physics and 3D rendering, featuring multiple force calculation algorithms and numerical integrators.
 
+![Demo](./nbody.gif)
+
 ## Features
 
 ### Physics Engine
